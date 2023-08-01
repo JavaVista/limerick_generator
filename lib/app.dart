@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:limerick_generator/controller/poem_controller.dart';
 import 'package:limerick_generator/controller/product_controller.dart';
-import 'package:limerick_generator/widgets/shimmer_loading_anim.dart';
-
 
 import 'domain/models/product.dart';
 
@@ -50,6 +48,8 @@ class LimerickPageState extends State<LimerickPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 8.0,
       ),
       body: Center(
         child: Padding(
@@ -72,10 +72,7 @@ class LimerickPageState extends State<LimerickPage> {
       children: <Widget>[
         Text(
           subTitle,
-          style: const TextStyle(
-            fontSize: 18,
-            color: Colors.black,
-          ),
+          style: Theme.of(context).textTheme.subtitle1,
         ),
         SizedBox(
           width: 150.0,
@@ -83,14 +80,20 @@ class LimerickPageState extends State<LimerickPage> {
             items: listProduct.map((Product value) {
               return DropdownMenuItem<Product>(
                 value: value,
-                child: Text(value.productName),
+                child: Container(
+                  padding:
+                      EdgeInsets.all(8.0), // Increase as per your requirement
+                  child: Text(value.productName),
+                ),
               );
             }).toList(),
-            hint: Text(productName.toString(),
-                style: const TextStyle(color: Colors.deepPurpleAccent)),
+            hint: Text(
+              productName.toString(),
+              style: const TextStyle(color: Colors.deepPurpleAccent),
+            ),
             underline: Container(
               height: 1,
-              color: Colors.deepPurpleAccent,
+              color: Theme.of(context).primaryColor,
             ),
             onChanged: (value) {
               setState(() {
@@ -101,24 +104,16 @@ class LimerickPageState extends State<LimerickPage> {
             isExpanded: true,
           ),
         ),
-        GestureDetector(
-          onTap: () => getLimerickTextData(productName.toString()),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 18),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Colors.blue,
-            ),
-            child: const Text(
-              'Generate limerick!',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+        ElevatedButton.icon(
+          icon: Icon(Icons.auto_stories),
+          label: Text('Generate limerick!'),
+          style: ElevatedButton.styleFrom(
+            primary: Theme.of(context).primaryColor,
+            onPrimary: Colors.white,
+            elevation: 5.0,
           ),
-        )
+          onPressed: () => getLimerickTextData(productName.toString()),
+        ),
       ],
     );
   }
@@ -126,37 +121,24 @@ class LimerickPageState extends State<LimerickPage> {
   Expanded buildBottomView() {
     return Expanded(
       child: limerickText.isNotEmpty
-          ? Container(
-              decoration: BoxDecoration(
-                color: Colors.amberAccent.shade100,
+          ? Card(
+              color: Colors.amberAccent.shade100,
+              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
+              elevation: 4.0,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   width: double.maxFinite,
                   child: Text(
                     limerickText,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                    ),
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
               ),
             )
-          : ShimmerLoadingAnim(
-              isLoading: true,
-              child: Container(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE5E5E5),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
+          : CircularProgressIndicator(),
     );
   }
 }

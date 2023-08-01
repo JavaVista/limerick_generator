@@ -11,6 +11,7 @@ class ProductRepositoryImpl implements ProductRepository {
       {'productName': 'DevFest Florida'},
       {'productName': 'Google I/O Extended Hackathon'},
       {'productName': 'Google Developer Student Clubs'},
+      {'productName': 'Janil (my daughter)'},
       {'productName': 'Women Techmakers'},
       {'productName': 'Google Developer Experts'},
       {'productName': 'Tech Equity Collective'},

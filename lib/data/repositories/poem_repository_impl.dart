@@ -11,7 +11,7 @@ class PoemRepositoryImpl implements PoemRepository {
 
   @override
   Future<String> getPoems(String productName) async {
-    var apiKey = dotenv.get('PaLM_API_KEY');;
+    var apiKey = dotenv.get('PaLM_API_KEY');
     const limerickCount = 5;
 
     final url = Uri.parse(
