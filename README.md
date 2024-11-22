@@ -4,7 +4,11 @@ This is a demo app for generating limericks using AI.
 
 ## Description
 
-The Limerick Generator is a Flutter project that uses the Google PaLM API AI to generate limericks. It provides a simple interface for users to generate limericks based on their selection.
+The Limerick Generator is a Flutter project that uses the Google AI to generate limericks. It provides a simple interface for users to generate limericks based on their selection.
+
+## Migration Notice
+
+The application originally was using Google PaLM API AI to generate limericks. It was upgraded to use the Gemini API, specifically the gemini-1.5-flash model, for generating limericks.
 
 ## Features
 
@@ -15,7 +19,7 @@ The Limerick Generator is a Flutter project that uses the Google PaLM API AI to 
 
 1. Clone this repository.
 2. Open the project in your preferred IDE.
-3. rename .env.example file to .env and add your PaLM API KEY
+3. rename .env.example file to .env and add your Gemini API KEY
 4. Run the app on your device or emulator.
 
 ## Usage

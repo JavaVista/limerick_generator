@@ -72,7 +72,7 @@ class LimerickPageState extends State<LimerickPage> {
       children: <Widget>[
         Text(
           subTitle,
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         SizedBox(
           width: 150.0,
@@ -82,7 +82,7 @@ class LimerickPageState extends State<LimerickPage> {
                 value: value,
                 child: Container(
                   padding:
-                      EdgeInsets.all(8.0), // Increase as per your requirement
+                      const EdgeInsets.all(8.0), // Increase as per your requirement
                   child: Text(value.productName),
                 ),
               );
@@ -105,11 +105,11 @@ class LimerickPageState extends State<LimerickPage> {
           ),
         ),
         ElevatedButton.icon(
-          icon: Icon(Icons.auto_stories),
-          label: Text('Generate limerick!'),
+          icon: const Icon(Icons.auto_stories),
+          label: const Text('Generate limerick!'),
           style: ElevatedButton.styleFrom(
-            primary: Theme.of(context).primaryColor,
-            onPrimary: Colors.white,
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
             elevation: 5.0,
           ),
           onPressed: () => getLimerickTextData(productName.toString()),
@@ -117,7 +117,6 @@ class LimerickPageState extends State<LimerickPage> {
       ],
     );
   }
-
   Expanded buildBottomView() {
     return Expanded(
       child: limerickText.isNotEmpty
@@ -131,14 +130,16 @@ class LimerickPageState extends State<LimerickPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   width: double.maxFinite,
-                  child: Text(
-                    limerickText,
-                    style: Theme.of(context).textTheme.bodyText2,
+                  child: SingleChildScrollView(
+                    child: Text(
+                      limerickText,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ),
                 ),
               ),
             )
-          : CircularProgressIndicator(),
+          : const CircularProgressIndicator(),
     );
   }
 }

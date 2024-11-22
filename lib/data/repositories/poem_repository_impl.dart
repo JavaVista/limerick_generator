@@ -1,9 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import '../../domain/repositories/abstract/poem_repository.dart';
-// ignore: unused_import
 import 'dart:convert';
-// ignore: unused_import
 import 'package:http/http.dart' as http;
 
 class PoemRepositoryImpl implements PoemRepository {
@@ -11,55 +8,61 @@ class PoemRepositoryImpl implements PoemRepository {
 
   @override
   Future<String> getPoems(String productName) async {
-    var apiKey = dotenv.get('PaLM_API_KEY');
+    var apiKey = dotenv.get('Gemini_API_KEY');
     const limerickCount = 5;
+    List<String> limericks = [];
 
     final url = Uri.parse(
-        "https://generativelanguage.googleapis.com/v1beta2/models/chat-bison-001:generateMessage?key=$apiKey");
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey");
     final headers = {
       'Content-Type': 'application/json',
     };
-    final body = jsonEncode({
-      "prompt": {
-        "context": "You are an not irish but you are an awesome limerick writer.",
-        "examples": [
+
+
+    for (int i = 0; i < limerickCount; i++) {
+      final body = jsonEncode({
+        "contents": [
           {
-            "input": {
-              "content": "Write a limerick about Google Developer Group."
-              },
-            "output": {
-              "content":
-                   "There once was a GDG in town,\nWhose members were always up for fun.\nThey learned new tech,\nAnd shared their know-how,\nAnd made the web a better place for all.",
-            }
+            "role": "user",
+            "parts": [
+              {
+                "text":
+                    "Write a cool limerick about $productName.  You are an awesome limerick writer, even though you're not Irish."
+              }
+            ]
           }
         ],
-        "messages": [
-          {"content": "Write a cool limerick for $productName."}
-        ]
-      },
-      "candidate_count": limerickCount,
-      "temperature": 1,
-    });
-
-    try {
-      final response = await http.post(
-        url,
-        headers: headers,
-        body: body,
-      );
-      if (response.statusCode == 200) {
-        final decodedResponse = json.decode(response.body);
-        String limericks = 'Here are $limerickCount limerick about $productName:\n\n';
-        for (var i = 0; i < limerickCount; i++) {
-          limericks += '${i + 1}.\n';
-          limericks += decodedResponse['candidates'][i]['content'] + '\n\n';
+        "generationConfig": {
+          "temperature": 1.0,
+          "topK": 40,
+          "topP": 0.95,
+          "maxOutputTokens": 8192,
         }
-        return limericks;
-      } else {
-        return 'Something went wrong, it failed with status: ${response.statusCode}.\n\n${response.body}';
+      });
+
+      try {
+        final response = await http.post(url, headers: headers, body: body);
+
+        if (response.statusCode == 200) {
+          final decodedResponse = json.decode(response.body);
+          final content = decodedResponse['candidates'][0]['content']['parts'][0]['text'];
+          limericks.add(content);
+        } else {
+          print('Error getting limerick ${i + 1}: ${response.statusCode} - ${response.body}');
+          limericks.add("Error generating limerick ${i+1}."); 
+        }
+      } catch (error) {
+        // Handle errors, but continue to try to get other limericks
+        print('Error getting limerick ${i + 1}: $error');
+        limericks.add("Error generating limerick ${i+1}."); // Placeholder for error
       }
-    } catch (error) {
-      throw Exception('Something went wrong, sending POST request: $error.');
     }
+
+    String result = 'Here are $limerickCount limericks about $productName:\n\n';
+    for (int i = 0; i < limericks.length; i++) {
+      result += '${i + 1}.\n${limericks[i]}\n\n';
+    }
+
+    return result;
   }
 }
